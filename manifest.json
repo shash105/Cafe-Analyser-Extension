@@ -14,7 +14,12 @@
     "content_scripts": [
         {
             "matches": ["https://www.google.com/search*"],
-            "js": ["content.js"],
+            "js": [
+                "modules/reviewExtractor.js",
+                "modules/analyser.js",
+                "modules/ui.js",
+                "content.js"
+            ],
             "css": ["styles.css"]
         }
     ]
