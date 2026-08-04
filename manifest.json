@@ -1,0 +1,21 @@
+{
+    "manifest_version": 3, 
+    "name": "Cafe Analyzer",
+    "version": "1.0",
+    "_notes": [
+        "manifest_version is saying like im using latest rulebook",
+        "name is what chrome displays",
+        "version is just our application's version",
+        "content_scripts tells chrome to inject js file when a certain webpage opens",
+        "our case - if it matches google search page run content.js"
+
+    ],
+
+    "content_scripts": [
+        {
+            "matches": ["https://www.google.com/search*"],
+            "js": ["content.js"],
+            "css": ["styles.css"]
+        }
+    ]
+}
