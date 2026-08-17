@@ -40,20 +40,41 @@ function keepLoadingReviews(onComplete) {
 //first finding and clicking the initial "More user reviews" button
 
 const interval = setInterval(() => {
+
     if (clickMoreReviews()) {
         clearInterval(interval);
         console.log("Initial reviews button clicked");
 
         // time to open the reviews section
         setTimeout(() => {
-            keepLoadingReviews(() => {
+            keepLoadingReviews(async () => {
                 console.log("Now extracting all reviews...");
                 const reviews = getReviews();
                 console.log("Total reviews:", reviews.length);
-                const summary = analyseReviews(reviews);
-                createPanel(summary);
+                // sending reviews to backend
+                try {
+                    const response = await fetch("http://localhost:3000/analyse",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({ reviews })
+                        }
+                    );
+
+                    // converting response to JSON
+                    const aiResult = await response.json();
+                    console.log("AI result:", aiResult);
+
+                    //displaying AI result in panel
+                    createPanel(aiResult);
+                } catch (error) {
+                    console.error(
+                        "Error connnecting to AI backend:",error
+                    );
+                }   
             });
         }, 2000);
-
     }
 }, 1000);
