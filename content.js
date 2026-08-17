@@ -16,22 +16,44 @@ function clickMoreReviews() {
 
 }
 
-const interval = setInterval(() => {
+// keep clicking "More user reviews" as long as Google provides it
 
-    if (clickMoreReviews()) {
+function keepLoadingReviews(onComplete) {
+    
+    const interval = setInterval(() => {
+        const clicked = clickMoreReviews();
 
+        if (clicked) {
+            console.log("More reviews loaded, checking again...");
+        }
+
+    }, 1500);
+
+    // Stop after 30 seconds
+    setTimeout(() => {
         clearInterval(interval);
+        console.log("Finished loading reviews.");
+        onComplete();
+    }, 30000);
+}
 
+//first finding and clicking the initial "More user reviews" button
+
+const interval = setInterval(() => {
+    if (clickMoreReviews()) {
+        clearInterval(interval);
+        console.log("Initial reviews button clicked");
+
+        // time to open the reviews section
         setTimeout(() => {
-
-            const reviews = getReviews();
-
-            const summary = analyseReviews(reviews);
-
-            createPanel(summary);
-
+            keepLoadingReviews(() => {
+                console.log("Now extracting all reviews...");
+                const reviews = getReviews();
+                console.log("Total reviews:", reviews.length);
+                const summary = analyseReviews(reviews);
+                createPanel(summary);
+            });
         }, 2000);
 
     }
-
 }, 1000);
